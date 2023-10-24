@@ -4,6 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import NestedList from "../list";
 import { DialogContent } from "@mui/material";
 
+//Por que el export default aqui? @adrian
 export default function InformationDialog({ open, handleClose, name }) {
   return (
     <Dialog onClose={handleClose} open={open}>
