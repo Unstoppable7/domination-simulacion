@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
 
-function NavBar() {
+function NavBar({ currentAmountVillagers, totalAmountVillagers }) {
   return (
     <AppBar position="static" style={{ backgroundColor: "#fff" }}>
       <Container maxWidth="xl">
@@ -26,7 +26,7 @@ function NavBar() {
                   fontSize: "1rem",
                 }}
               >
-                1/3 👨
+                {currentAmountVillagers}/{totalAmountVillagers} 👨
               </Button>
 
               <Button

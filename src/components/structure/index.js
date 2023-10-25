@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import InformationDialog from "../modal";
 
-const Structure = ({ image, name, data }) => {
+const Structure = ({ image, name, data, disabled }) => {
   const [openInformationModal, setOpenInformationModal] = useState(false);
 
   return (
@@ -13,7 +13,7 @@ const Structure = ({ image, name, data }) => {
           <Typography variant="h6">{name}</Typography>
         </Box>
         <Card
-          onClick={() => setOpenInformationModal(true)}
+          onClick={() => !disabled && setOpenInformationModal(true)}
           style={{ cursor: "pointer" }}
         >
           <CardContent>
