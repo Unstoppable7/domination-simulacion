@@ -4,7 +4,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { townlevelOneList } from "../../utils/build-list";
-import { ListItemIcon } from "@mui/material";
+import { Box, ListItemIcon } from "@mui/material";
 
 export default function CreateList({ list = [], handleCreateItem }) {
   const [open, setOpen] = React.useState(true);
@@ -38,6 +38,12 @@ export default function CreateList({ list = [], handleCreateItem }) {
           <div>
             <ListItemText primary={`(${item.quantity})`} />
           </div>
+
+          <Box ml={3}>
+            {item.typeResource === "food"
+              ? `🍟${item.resourceAmount}`
+              : `💰${item.resourceAmount}`}
+          </Box>
         </ListItemButton>
       ))}
     </List>

@@ -57,7 +57,7 @@ export default function BuildProgressBar({
         id: null,
       });
     }
-  }, [id, progress, setBuildProgress, setShowProgressBar]);
+  }, [id, progress, setBuildProgress, setCurrentAmountVillagers, setShowProgressBar]);
 
   return (
     <Box sx={{ width: "200px" }}>

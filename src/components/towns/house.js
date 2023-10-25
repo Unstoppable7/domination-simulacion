@@ -8,6 +8,7 @@ const House = () => {
         name="Casa"
         image={"/assets/images/house.jpg"}
         data={{}}
+        showImproveOption={false}
       />
     </>
   );

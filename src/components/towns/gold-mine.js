@@ -8,6 +8,7 @@ const GoldMine = () => {
         name="Mina de oro"
         image={"/assets/images/gold-mine.jpg"}
         data={{}}
+        showImproveOption={false}
       />
     </>
   );

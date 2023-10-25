@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import InformationDialog from "../modal";
 
-const Structure = ({ image, name, data, disabled }) => {
+const Structure = ({ image, name, data, disabled, showImproveOption }) => {
   const [openInformationModal, setOpenInformationModal] = useState(false);
 
   return (
@@ -30,6 +30,7 @@ const Structure = ({ image, name, data, disabled }) => {
         handleClose={() => {
           setOpenInformationModal(false);
         }}
+        showImproveOption={showImproveOption}
       />
     </>
   );

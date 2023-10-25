@@ -3,11 +3,11 @@ import Town from "./components/towns/main-town";
 import GoldMine from "./components/towns/gold-mine";
 import House from "./components/towns/house";
 import Farm from "./components/towns/farm";
-import Castle from "./components/towns/castle";
 import NavBar from "./components/navbar";
 import { Fragment, useState } from "react";
 import CreateTownModal from "./components/createTownModal";
 import BuildProgressBar from "./components/progressBar";
+import CustomizedSnackbars from "./components/snackBar";
 
 function App() {
   //TODO estructura de objetos con los datos al subir de nivel
@@ -17,8 +17,10 @@ function App() {
   const [level, setLevel] = useState(1);
 
   //Variables para contabilizar recursos u estructuras actuales
-  const [currentAmountFood, setCurrentAmountFood] = useState(0);
-  const [currentAmountGold, setCurrentAmountGold] = useState(0);
+  const [currentAmountFood, setCurrentAmountFood] = useState(500);
+  const [totalAmountFood, setTotalAmountFood] = useState(1000);
+  const [currentAmountGold, setCurrentAmountGold] = useState(250);
+  const [totalAmountGold, seTtotalAmountGold] = useState(500);
   const [currentAmountVillagers, setCurrentAmountVillagers] = useState(5);
   const [totalAmountVillagers, setTotalAmountVillagers] = useState(5);
   const [currentNumberMills, setCurrentNumberMills] = useState(0);
@@ -48,6 +50,8 @@ function App() {
       show: false,
       buildTime: 1000,
       villagerAmount: 2,
+      typeResource: "gold",
+      resourceAmount: 100,
     },
     {
       id: 2,
@@ -57,6 +61,8 @@ function App() {
       show: false,
       buildTime: 1500,
       villagerAmount: 1,
+      typeResource: "food",
+      resourceAmount: 250,
     },
     {
       id: 3,
@@ -66,6 +72,8 @@ function App() {
       show: false,
       buildTime: 500,
       villagerAmount: 1,
+      typeResource: "gold",
+      resourceAmount: 125,
     },
   ]);
 
@@ -78,10 +86,60 @@ function App() {
     open: false,
   });
 
+  const [openAlert, setOpenAlert] = useState({
+    type: "",
+    open: false,
+  });
+
   const handleCreateItem = (value) => {
     setTownLevelOnelist((prev) => {
       return prev.map((item) => {
         if (item.id === value.id && value.quantity > 0) {
+          // valida el total de comida
+
+          console.log(item);
+          if (
+            currentAmountFood === 0 ||
+            (item.typeResource === "food" &&
+              totalAmountFood < value.resourceAmount)
+          ) {
+            console.log("hola");
+            setOpenAlert({
+              type: "food",
+              open: true,
+            });
+
+            setTimeout(() => {
+              setOpenAlert({
+                type: "",
+                open: false,
+              });
+            }, 3000);
+
+            return item;
+          }
+
+          // valida el total de oro
+          if (
+            currentAmountGold === 0 ||
+            (item.typeResource === "gold" &&
+              totalAmountGold < value.resourceAmount)
+          ) {
+            setOpenAlert({
+              type: "gold",
+              open: true,
+            });
+
+            setTimeout(() => {
+              setOpenAlert({
+                type: "",
+                open: false,
+              });
+            }, 3000);
+
+            return item;
+          }
+
           setOpenBuildModal(false);
 
           setShowProgressBar({
@@ -90,6 +148,12 @@ function App() {
           });
 
           setCurrentAmountVillagers((prev) => prev - item.villagerAmount);
+
+          if (item.typeResource === "food") {
+            setCurrentAmountFood((prev) => prev - item.resourceAmount);
+          } else {
+            setCurrentAmountGold((prev) => prev - item.resourceAmount);
+          }
 
           return {
             ...item,
@@ -108,6 +172,10 @@ function App() {
       <NavBar
         currentAmountVillagers={currentAmountVillagers}
         totalAmountVillagers={totalAmountVillagers}
+        currentAmountFood={currentAmountFood}
+        totalAmountFood={totalAmountFood}
+        currentAmountGold={currentAmountGold}
+        totalAmountGold={totalAmountGold}
       />
       <Box mt={5} mb={10} display="flex" justifyContent="space-around">
         {townlevelOneList.map((item) => (
@@ -209,6 +277,14 @@ function App() {
         open={openBuildModal}
         list={townlevelOneList}
         handleCreateItem={handleCreateItem}
+      />
+
+      <CustomizedSnackbars
+        handleClose={() => setOpenAlert(false)}
+        message={`No tienes suficiente ${
+          openAlert.type === "food" ? "Comida" : "Oro"
+        }`}
+        open={openAlert.open}
       />
     </Box>
   );

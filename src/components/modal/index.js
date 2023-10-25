@@ -5,13 +5,18 @@ import NestedList from "../list";
 import { DialogContent } from "@mui/material";
 
 //Por que el export default aqui? @adrian
-export default function InformationDialog({ open, handleClose, name }) {
+export default function InformationDialog({
+  open,
+  handleClose,
+  name,
+  showImproveOption,
+}) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>{name}</DialogTitle>
 
-      <DialogContent style={{ width: 400}}>
-        <NestedList />
+      <DialogContent style={{ width: 400 }}>
+        <NestedList showImproveOption={showImproveOption} />
       </DialogContent>
     </Dialog>
   );

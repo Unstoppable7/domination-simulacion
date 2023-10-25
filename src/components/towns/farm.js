@@ -9,6 +9,7 @@ const Farm = ({ disabled }) => {
         image={"/assets/images/farm.webp"}
         data={{}}
         disabled={disabled}
+        showImproveOption={true}
       />
     </>
   );
