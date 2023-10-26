@@ -43,7 +43,7 @@ export default function AutomaticCollector({
 
   }, [currentAccumulatedResource]);
 
-  function upgrateCollector(currentUpgradeLevel) {
+  function upgradeCollector(currentUpgradeLevel) {
     setResourcesPerMinute(
       resourcesPerMinute + upgradeLevels[currentUpgradeLevel].plusResourcesPerMinute
     );
@@ -64,7 +64,7 @@ export default function AutomaticCollector({
         quantityResource={quantityResource}
         quantityVillagers={quantityVillagers}
         handleUpdateStorageValues={handleUpdateStorageValues}
-        handleUpgrate = {upgrateCollector}
+        handleUpgrade = {upgradeCollector}
         name={name}
         handleCollect={collectReward}
         handleDisableCollectBotton={collectBottonState}

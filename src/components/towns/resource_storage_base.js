@@ -8,71 +8,99 @@ export default function ResourceStorageBase({
   quantityResource,
   quantityVillagers,
   handleUpdateStorageValues,
-  handleUpgrate = () => { },
+  handleUpgrade = () => { },
   name,
   handleDisableCollectBotton,
   handleDisableUpgradeBotton = true,
   handleCollect = () => { }
 }) {
-  const [currentImage, setCurrentImage] = useState("");
+  const [currentUpgradeLevel, setCurrentUpgradeLevel] = useState(1);
 
-  const [currentLifePoints, setCurrentLifePoints] = useState(0);
-  const [currentStorageCapacity, setCurrentStorageCapacity] = useState(0);
-  const [currentUpgradeLevel, setCurrentUpgradeLevel] = useState(0);
-  const [upgradeBottonState, setUpgradeBottonState] = useState(false);
-
+  const [currentImage, setCurrentImage] = useState(
+    upgradeLevels[currentUpgradeLevel]?.image
+  );
+  const [currentLifePoints, setCurrentLifePoints] = useState(
+    upgradeLevels[currentUpgradeLevel]?.lifePoints
+  );
+  const [currentStorageCapacity, setCurrentStorageCapacity] = useState(
+    upgradeLevels[currentUpgradeLevel]?.storageCapacity
+  );
+  const [upgradeBottonState, setUpgradeBottonState] = useState(true);
 
   const [remainingTime, setRemainingTime] = useState(
-    requirementsByLevel[level].upgradeTime
+    requirementsByLevel[currentUpgradeLevel]?.upgradeTime
   );
-
-  //Solo se ejecuta cuando se crea por primera vez el componente
-  useEffect(() => {
-    improveBuilding();
-  }, []);
 
   //Building level upgrade
   useEffect(() => {
+    console.log("quantityResource: ", quantityResource);
+    console.log("resourceRequired: ", requirementsByLevel[currentUpgradeLevel + 1]?.resourceRequired);
+    console.log("quantityVillagers: ", quantityVillagers);
+    console.log("villagersRequired: ", requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired);
+    console.log("currentUpgradeLevel: ", currentUpgradeLevel);
     if (
-      quantityResource >= requirementsByLevel[level].resourceRequired &&
-      quantityVillagers >= requirementsByLevel[level].villagersRequired &&
+      quantityResource >= requirementsByLevel[currentUpgradeLevel + 1]?.resourceRequired &&
+      quantityVillagers >= requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired &&
+      level >= requirementsByLevel[currentUpgradeLevel + 1]?.level &&
       handleDisableUpgradeBotton
     ) {
-      setUpgradeBottonState(true);
+      setUpgradeBottonState(false);
+
+      console.log("upgradeBottonState", upgradeBottonState);
+
     } else {
-      setUpgradeBottonState(false)
+      setUpgradeBottonState(true);
+
     }
-  }, [level, quantityResource, quantityVillagers]);
 
-  function improveBuilding(upgradeLevelBooster = 1) {
+    console.log("LEVEL: ", level);
+
+  }, [level, quantityResource, quantityVillagers, currentUpgradeLevel]);
+
+  //Solo se ejecuta cuando se crea por primera vez el componente
+  // useEffect(() => {
+  //   improveBuilding();
+  // }, []);
+
+  useEffect(() => {
+    
+    handleUpdateStorageValues(
+      upgradeLevels[currentUpgradeLevel]?.storageCapacity
+    );
+    
+    if (handleUpgrade) {
+      handleUpgrade(currentUpgradeLevel);
+    }
+  }, [currentUpgradeLevel]);
+
+  function improveBuilding() {
+
     const timer = setTimeout(() => {
-      setCurrentUpgradeLevel(currentUpgradeLevel + upgradeLevelBooster);
 
-      setCurrentLifePoints(
-        currentLifePoints + upgradeLevels[currentUpgradeLevel].lifePoints
-      );
-      setCurrentStorageCapacity(
-        currentStorageCapacity +
-        upgradeLevels[currentUpgradeLevel].storageCapacity
-      );
-      setCurrentImage(upgradeLevels[currentUpgradeLevel].image);
+      setCurrentUpgradeLevel((prev) => { 
+        const updateUpgradeLevel = prev + 1;
+        setCurrentLifePoints(
+          currentLifePoints + upgradeLevels[updateUpgradeLevel]?.lifePoints
+        );
+        setCurrentStorageCapacity(
+          currentStorageCapacity +
+          upgradeLevels[updateUpgradeLevel]?.storageCapacity
+        );
+        setCurrentImage(upgradeLevels[updateUpgradeLevel]?.image);
+  
+        
 
-      handleUpdateStorageValues(
-        upgradeLevels[currentUpgradeLevel].storageCapacity
-      );
+        return updateUpgradeLevel;
+      });
 
-      //Funcion de mejora especifica
-      if (handleUpgrate) {
-        handleUpgrate(currentUpgradeLevel);
-      }
+    }, requirementsByLevel[currentUpgradeLevel + 1].upgradeTime);
 
-    }, requirementsByLevel[level].upgradeTime);
-
-    setRemainingTime(requirementsByLevel[level].upgradeTime);
+    setRemainingTime(requirementsByLevel[currentUpgradeLevel + 1].upgradeTime);
 
     // Actualiza el tiempo restante cada segundo
     const interval = setInterval(() => {
       setRemainingTime((prevTime) => {
+        console.log("Upgrade Time",name,":",prevTime/1000);
         if (prevTime <= 1000) {
           clearInterval(interval); // Detiene el intervalo cuando el tiempo llega a 0
           return 0;

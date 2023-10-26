@@ -1,4 +1,5 @@
 import { Box, Button } from "@mui/material";
+import TownHall from "./components/towns/town_hall";
 import Town from "./components/towns/main-town";
 import GoldMine from "./components/towns/gold-mine";
 import House from "./components/towns/house";
@@ -8,29 +9,28 @@ import { Fragment, useState } from "react";
 import CreateTownModal from "./components/createTownModal";
 import BuildProgressBar from "./components/progressBar";
 import CustomizedSnackbars from "./components/snackBar";
+import { TypesOfResources } from "./constants/constants";
 
 function App() {
-  //TODO estructura de objetos con los datos al subir de nivel
-  //TODO funcion para recoleccion de recursos
 
   //Fuction to upgrade level
   const [level, setLevel] = useState(1);
 
   //Variables para contabilizar recursos u estructuras actuales
   const [currentAmountFood, setCurrentAmountFood] = useState(500);
-  const [totalAmountFood, setTotalAmountFood] = useState(1000);
+  // const [totalAmountFood, setTotalAmountFood] = useState(1000);
   const [currentAmountGold, setCurrentAmountGold] = useState(250);
-  const [totalAmountGold, seTtotalAmountGold] = useState(500);
+  // const [totalAmountGold, seTtotalAmountGold] = useState(500);
   const [currentAmountVillagers, setCurrentAmountVillagers] = useState(5);
-  const [totalAmountVillagers, setTotalAmountVillagers] = useState(5);
+  // const [totalAmountVillagers, setTotalAmountVillagers] = useState(5);
   const [currentNumberMills, setCurrentNumberMills] = useState(0);
   const [currentNumberMarkets, setCurrentNumberMarkets] = useState(0);
   const [currentNumberHouses, setCurrentNumberHouses] = useState(0);
 
   //Variables que definen limites de cada recurso/estructura
-  const [foodLimit, setFoodLimit] = useState(0);
-  const [goldLimit, setGoldLimit] = useState(0);
-  const [villagersLimit, setVillagersLimit] = useState(0);
+  const [foodLimit, setFoodLimit] = useState(1000);
+  const [goldLimit, setGoldLimit] = useState(500);
+  const [villagersLimit, setVillagersLimit] = useState(5);
   const [millsLimit, setMillsLimit] = useState(0);
   const [marketsLimit, setMarketsLimit] = useState(0);
   const [housesLimit, setHousesLimit] = useState(0);
@@ -92,8 +92,11 @@ function App() {
   });
 
   const handleCreateItem = (value) => {
+
     setTownLevelOnelist((prev) => {
+
       return prev.map((item) => {
+
         if (item.id === value.id && value.quantity > 0) {
           // valida el total de comida
 
@@ -101,7 +104,7 @@ function App() {
           if (
             currentAmountFood === 0 ||
             (item.typeResource === "food" &&
-              totalAmountFood < value.resourceAmount)
+              foodLimit < value.resourceAmount)
           ) {
             console.log("hola");
             setOpenAlert({
@@ -123,7 +126,7 @@ function App() {
           if (
             currentAmountGold === 0 ||
             (item.typeResource === "gold" &&
-              totalAmountGold < value.resourceAmount)
+              goldLimit < value.resourceAmount)
           ) {
             setOpenAlert({
               type: "gold",
@@ -171,15 +174,19 @@ function App() {
     <Box mb={10}>
       <NavBar
         currentAmountVillagers={currentAmountVillagers}
-        totalAmountVillagers={totalAmountVillagers}
+        totalAmountVillagers={villagersLimit}
         currentAmountFood={currentAmountFood}
-        totalAmountFood={totalAmountFood}
+        totalAmountFood={foodLimit}
         currentAmountGold={currentAmountGold}
-        totalAmountGold={totalAmountGold}
+        totalAmountGold={goldLimit}
       />
+
+      {/* Renderiza luego de construir */}
       <Box mt={5} mb={10} display="flex" justifyContent="space-around">
         {townlevelOneList.map((item) => (
+
           <Fragment key={item.id}>
+            
             {item.show && item.name === "Casa" && (
               <Box display="flex" flexDirection="column" alignItems="center">
                 {showProgressBar.townId === item.id && (
@@ -199,7 +206,7 @@ function App() {
                         : 1,
                   }}
                 >
-                  <House disabled={showProgressBar.open} />
+                  <House/>
                 </div>
               </Box>
             )}
@@ -222,7 +229,7 @@ function App() {
                         : 1,
                   }}
                 >
-                  <GoldMine disabled={showProgressBar.open} />
+                  <GoldMine/>
                 </div>
               </Box>
             )}
@@ -245,7 +252,7 @@ function App() {
                         : 1,
                   }}
                 >
-                  <Farm disabled={showProgressBar.open} />
+                  <Farm/>
                 </div>
               </Box>
             )}
@@ -254,7 +261,13 @@ function App() {
       </Box>
 
       <Box display="flex" justifyContent="center">
-        <Town />
+        <TownHall
+          level={level}
+          quantityResource={currentAmountGold}
+          quantityVillagers={currentAmountVillagers}
+          handleUpdateStorageValues={setGoldLimit}
+          upgradeLevel = {setLevel}
+        />
       </Box>
 
       <Box display="flex" justifyContent="end" mr={20} mt={20}>
@@ -281,9 +294,8 @@ function App() {
 
       <CustomizedSnackbars
         handleClose={() => setOpenAlert(false)}
-        message={`No tienes suficiente ${
-          openAlert.type === "food" ? "Comida" : "Oro"
-        }`}
+        message={`No tienes suficiente ${openAlert.type === "food" ? "Comida" : "Oro"
+          }`}
         open={openAlert.open}
       />
     </Box>
