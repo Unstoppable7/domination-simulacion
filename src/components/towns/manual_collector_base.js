@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 import Structure from "../structure";
 
-function manualCollectorBase({ level, quantityVillagers, handleResourceUpdate, upgradeLevels, name }) {
+export default function ManualCollectorBase({
+  level,
+  quantityVillagers,
+  handleResourceUpdate,
+  upgradeLevels,
+  name
+}) {
   const [currentReward, setCurrentReward] = useState(0);
   const [currentCollectionTime, setCurrentCollectionTime] = useState(0);
   const [currentRefillTime, setCurrentRefillTime] = useState(0);
@@ -12,6 +18,7 @@ function manualCollectorBase({ level, quantityVillagers, handleResourceUpdate, u
   const [remainingTimeToRefill, setRemainingTimeToRefill] = useState(currentRefillTime);
   const [isCollectible, setIsCollectible] = useState(true);
 
+  const [collectBottonState, setCollectBottonState] = useState(false);
 
   //Level upgrade
   useEffect(() => {
@@ -27,13 +34,13 @@ function manualCollectorBase({ level, quantityVillagers, handleResourceUpdate, u
   useEffect(() => {
 
     if (quantityVillagers >= currentCitizensRequired && isCollectible) {
-
-      // Habilito/inhabilito el boton de recoger
+      setCollectBottonState(true);
+    } else {
+      setCollectBottonState(false);
     }
 
   }, [quantityVillagers, isCollectible]);
 
-  //TODO Llamar en el onclick del boton recoger
   function collectReward() {
 
     setIsCollectible(false);
@@ -82,7 +89,7 @@ function manualCollectorBase({ level, quantityVillagers, handleResourceUpdate, u
     return () => {
       clearTimeout(timerToCollect);
       clearInterval(intervalToCollect);
-      clearInterval(timerToRefill);
+      clearTimeout(timerToRefill);
       clearInterval(intervalToRefill);
     };
   }
@@ -92,7 +99,9 @@ function manualCollectorBase({ level, quantityVillagers, handleResourceUpdate, u
       <Structure
         name={name}
         image={currentImage}
-        data={{}}
+        handleCollect={collectReward}
+        handleDisableUpgradeBotton={false}
+        handleDisableCollectBotton={collectBottonState}
       />
     </>
   );

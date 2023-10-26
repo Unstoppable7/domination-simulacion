@@ -10,13 +10,18 @@ export default function InformationDialog({
   handleClose,
   name,
   showImproveOption,
+  handleCollect, 
+  handleUpgrade, 
+  handleDisableCollectBotton,
+  handleDisableUpgradeBotton
+
 }) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>{name}</DialogTitle>
 
       <DialogContent style={{ width: 400 }}>
-        <NestedList showImproveOption={showImproveOption} />
+        <NestedList showImproveOption={showImproveOption} handleCollect={handleCollect} handleUpgrade={handleUpgrade} handleDisableCollectBotton={handleDisableCollectBotton} handleDisableUpgradeBotton={handleDisableUpgradeBotton}/>
       </DialogContent>
     </Dialog>
   );

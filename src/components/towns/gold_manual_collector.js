@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import manualCollectorBase from "./manual_collector_base";
+import ManualCollectorBase from "./manual_collector_base";
 import { TypesOfResources } from "../../constants/constants";
 
 export default function GoldManualCollector({
@@ -40,7 +40,7 @@ export default function GoldManualCollector({
 
   return (
     <>
-      <manualCollectorBase
+      <ManualCollectorBase
         level={level}
         quantityVillagers={quantityVillagers}
         handleResourceUpdate={updateValues}

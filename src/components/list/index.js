@@ -4,7 +4,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
-export default function NestedList({ showImproveOption = true }) {
+export default function NestedList({ showImproveOption = true, handleCollect, handleUpgrade, handleDisableCollectBotton,handleDisableUpgradeBotton }) {
   return (
     <List
       sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
@@ -17,11 +17,11 @@ export default function NestedList({ showImproveOption = true }) {
       }
     >
       {showImproveOption && (
-        <ListItemButton>
+        <ListItemButton onClick={handleUpgrade} disabled={handleDisableUpgradeBotton}>
           <ListItemText primary="Mejorar" />
         </ListItemButton>
       )}
-      <ListItemButton>
+      <ListItemButton onClick={handleCollect} disabled={handleDisableCollectBotton}>
         <ListItemText primary="Recoger" />
       </ListItemButton>
     </List>

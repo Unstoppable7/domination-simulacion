@@ -3,7 +3,17 @@ import React, { useState } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import InformationDialog from "../modal";
 
-const Structure = ({ image, name, data, disabled, showImproveOption }) => {
+const Structure = ({ 
+  image, 
+  name, 
+  data, 
+  disabled, 
+  showImproveOption, 
+  handleCollect, 
+  handleUpgrade, 
+  handleDisableCollectBotton,
+  handleDisableUpgradeBotton
+}) => {
   const [openInformationModal, setOpenInformationModal] = useState(false);
 
   return (
@@ -31,6 +41,10 @@ const Structure = ({ image, name, data, disabled, showImproveOption }) => {
           setOpenInformationModal(false);
         }}
         showImproveOption={showImproveOption}
+        handleCollect={handleCollect}
+        handleUpgrade={handleUpgrade}
+        handleDisableCollectBotton={handleDisableCollectBotton}
+        handleDisableUpgradeBotton={handleDisableUpgradeBotton}
       />
     </>
   );

@@ -1,26 +1,35 @@
-import ResourceStorageBase from "./resource_storage_base";
+import AutomaticCollector from "./automatic_collector";
 import { TypesOfResources } from "../../constants/constants";
 
-export default function GoldStorage({ level, quantityResource, quantityVillagers, handleUpdateStorageValues }) {
+export default function FoodAutomaticCollector({
+    level,
+    quantityResource,
+    quantityVillagers,
+    handleUpdateStorageValues,
+    handleResourceUpdate
+}) {
 
-    let name = "Market";
+    let name = "Farm";
 
     const upgradeLevels = {
 
         1: {
             lifePoints: 960,
             storageCapacity: 2500,
-            image: 'market_level_1'
+            plusResourcesPerMinute: 100,
+            image: 'farm_level_1'
         },
         2: {
             lifePoints: 480, //1440
             storageCapacity: 7500, //10000
-            image: 'market_level_2'
+            plusResourcesPerMinute: 200,
+            image: 'farm_level_2'
         },
         3: {
             lifePoints: 480, //1920,
             storageCapacity: 20000, //30000,
-            image: 'market_level_3'
+            plusResourcesPerMinute: 300,
+            image: 'farm_level_3'
         }
 
     };
@@ -53,7 +62,7 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
 
     return (
         <>
-            <ResourceStorageBase
+            <AutomaticCollector
                 level={level}
                 upgradeLevels={upgradeLevels}
                 requirementsByLevel={requirementsByLevel}
@@ -61,7 +70,7 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
                 quantityVillagers={quantityVillagers}
                 handleUpdateStorageValues={updateValues}
                 name={name}
-                handleDisableCollectBotton={false}
+                handleResourceUpdate={handleResourceUpdate}
             />
         </>
     );

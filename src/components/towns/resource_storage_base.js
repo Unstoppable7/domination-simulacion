@@ -8,13 +8,19 @@ export default function ResourceStorageBase({
   quantityResource,
   quantityVillagers,
   handleUpdateStorageValues,
+  handleUpgrate = () => { },
   name,
+  handleDisableCollectBotton,
+  handleDisableUpgradeBotton = true,
+  handleCollect = () => { }
 }) {
   const [currentImage, setCurrentImage] = useState("");
 
   const [currentLifePoints, setCurrentLifePoints] = useState(0);
   const [currentStorageCapacity, setCurrentStorageCapacity] = useState(0);
   const [currentUpgradeLevel, setCurrentUpgradeLevel] = useState(0);
+  const [upgradeBottonState, setUpgradeBottonState] = useState(false);
+
 
   const [remainingTime, setRemainingTime] = useState(
     requirementsByLevel[level].upgradeTime
@@ -29,13 +35,15 @@ export default function ResourceStorageBase({
   useEffect(() => {
     if (
       quantityResource >= requirementsByLevel[level].resourceRequired &&
-      quantityVillagers >= requirementsByLevel[level].villagersRequired
+      quantityVillagers >= requirementsByLevel[level].villagersRequired &&
+      handleDisableUpgradeBotton
     ) {
-      // Habilito/inhabilito el boton de mejorar
+      setUpgradeBottonState(true);
+    } else {
+      setUpgradeBottonState(false)
     }
   }, [level, quantityResource, quantityVillagers]);
 
-  //TODO Llamar en el onclick del boton mejorar
   function improveBuilding(upgradeLevelBooster = 1) {
     const timer = setTimeout(() => {
       setCurrentUpgradeLevel(currentUpgradeLevel + upgradeLevelBooster);
@@ -45,13 +53,19 @@ export default function ResourceStorageBase({
       );
       setCurrentStorageCapacity(
         currentStorageCapacity +
-          upgradeLevels[currentUpgradeLevel].storageCapacity
+        upgradeLevels[currentUpgradeLevel].storageCapacity
       );
       setCurrentImage(upgradeLevels[currentUpgradeLevel].image);
 
       handleUpdateStorageValues(
         upgradeLevels[currentUpgradeLevel].storageCapacity
       );
+
+      //Funcion de mejora especifica
+      if (handleUpgrate) {
+        handleUpgrate(currentUpgradeLevel);
+      }
+
     }, requirementsByLevel[level].upgradeTime);
 
     setRemainingTime(requirementsByLevel[level].upgradeTime);
@@ -76,7 +90,15 @@ export default function ResourceStorageBase({
 
   return (
     <>
-      <Structure name={name} image={currentImage} data={{}} />
+      <Structure
+        name={name}
+        image={currentImage}
+        data={{}}
+        handleUpgrade={improveBuilding}
+        handleCollect={handleCollect}
+        handleDisableUpgradeBotton={upgradeBottonState}
+        handleDisableCollectBotton={handleDisableCollectBotton}
+      />
     </>
   );
 }

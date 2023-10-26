@@ -1,26 +1,32 @@
 import ResourceStorageBase from "./resource_storage_base";
 import { TypesOfResources } from "../../constants/constants";
 
-export default function GoldStorage({ level, quantityResource, quantityVillagers, handleUpdateStorageValues }) {
+export default function TownHall({ 
+    level, 
+    quantityResource, 
+    quantityVillagers, 
+    handleUpdateStorageValues,
+    upgrateLevel
+ }) {
 
-    let name = "Market";
+    let name = "Town Hall";
 
     const upgradeLevels = {
 
         1: {
             lifePoints: 960,
-            storageCapacity: 2500,
-            image: 'market_level_1'
+            storageCapacity: 500,
+            image: 'town_level_1'
         },
         2: {
             lifePoints: 480, //1440
             storageCapacity: 7500, //10000
-            image: 'market_level_2'
+            image: 'town_level_2'
         },
         3: {
             lifePoints: 480, //1920,
             storageCapacity: 20000, //30000,
-            image: 'market_level_3'
+            image: 'town_level_3'
         }
 
     };
@@ -28,9 +34,9 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
     const requirementsByLevel = {
 
         1: {
-            resourceRequired: 500,
-            villagersRequired: 4,
-            upgradeTime: 900000 //15min
+            resourceRequired: 0,
+            villagersRequired: 0,
+            upgradeTime: 0
         },
         2: {
             resourceRequired: 1400,
@@ -51,6 +57,13 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
         handleUpdateStorageValues(TypesOfResources.GOLD, plusStorageCapacity);
     }
 
+    function upgrateTownHall(currentUpgradeLevel) {
+        
+        //TODO manejar en el padre
+        upgrateLevel(currentUpgradeLevel);
+
+    }
+
     return (
         <>
             <ResourceStorageBase
@@ -62,6 +75,7 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
                 handleUpdateStorageValues={updateValues}
                 name={name}
                 handleDisableCollectBotton={false}
+                handleUpgrate={upgrateTownHall}
             />
         </>
     );

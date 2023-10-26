@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import resourceStorageBase from "./resource_storage_base";
+import ResourceStorageBase from "./resource_storage_base";
 import { TypesOfResources } from "../../constants/constants";
 
 export default function FoodStorage({
@@ -53,7 +53,7 @@ export default function FoodStorage({
 
   return (
     <>
-      <resourceStorageBase
+      <ResourceStorageBase
         level={level}
         upgradeLevels={upgradeLevels}
         requirementsByLevel={requirementsByLevel}
@@ -61,6 +61,7 @@ export default function FoodStorage({
         quantityVillagers={quantityVillagers}
         handleUpdateStorageValues={updateValues}
         name={name}
+        handleDisableCollectBotton={false}
       />
     </>
   );
