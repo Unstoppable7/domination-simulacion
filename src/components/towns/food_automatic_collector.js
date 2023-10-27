@@ -6,7 +6,9 @@ export default function FoodAutomaticCollector({
     quantityResource,
     quantityVillagers,
     handleUpdateStorageValues,
-    handleResourceUpdate
+    handleResourceUpdate,
+    handleResourceRequiredUpdate,
+    handleVillagersUpdate
 }) {
 
     let name = "Farm";
@@ -15,21 +17,21 @@ export default function FoodAutomaticCollector({
 
         1: {
             lifePoints: 960,
-            storageCapacity: 2500,
+            storageCapacity: 200,
             plusResourcesPerMinute: 100,
-            image: 'farm_level_1'
+            image: '/assets/images/farm_1.png'
         },
         2: {
             lifePoints: 480, //1440
             storageCapacity: 7500, //10000
             plusResourcesPerMinute: 200,
-            image: 'farm_level_2'
+            image: '/assets/images/farm_2.png'
         },
         3: {
             lifePoints: 480, //1920,
             storageCapacity: 20000, //30000,
             plusResourcesPerMinute: 300,
-            image: 'farm_level_3'
+            image: '/assets/images/farm_3.png'
         }
 
     };
@@ -37,19 +39,22 @@ export default function FoodAutomaticCollector({
     const requirementsByLevel = {
 
         1: {
-            resourceRequired: 500,
-            villagersRequired: 4,
-            upgradeTime: 900000 //15min
+            resourceRequired: 0,
+            villagersRequired: 0,
+            upgradeTime: 0,
+            level: 0
         },
         2: {
-            resourceRequired: 1400,
+            resourceRequired: 100,
             villagersRequired: 4,
-            upgradeTime: 900000 //15min
+            upgradeTime: 5000 ,
+            level: 0
         },
         3: {
             resourceRequired: 5600,
             villagersRequired: 4,
-            upgradeTime: 1800000 //30min
+            upgradeTime: 1800000,
+            level: 0 
         }
 
     };
@@ -57,7 +62,7 @@ export default function FoodAutomaticCollector({
     function updateValues(plusStorageCapacity) {
 
         //Funcion en el padre que va a actualizar el limite actual del recurso
-        handleUpdateStorageValues(TypesOfResources.GOLD, plusStorageCapacity);
+        handleUpdateStorageValues((prev) => prev + plusStorageCapacity);
     }
 
     return (
@@ -71,6 +76,9 @@ export default function FoodAutomaticCollector({
                 handleUpdateStorageValues={updateValues}
                 name={name}
                 handleResourceUpdate={handleResourceUpdate}
+                handleVillagersUpdate={handleVillagersUpdate}
+                handleResourceRequiredUpdate={handleResourceRequiredUpdate}
+                typeOfResource={TypesOfResources.GOLD}
             />
         </>
     );

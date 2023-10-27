@@ -11,6 +11,7 @@ import { TypesOfResources } from "./constants/constants";
 import GoldManualCollector from "./components/towns/gold_manual_collector";
 import FoodManualCollector from "./components/towns/food_manual_collector";
 import HouseVillager from "./components/towns/house_villager";
+import FoodAutomaticCollector from "./components/towns/food_automatic_collector";
 
 function App() {
 
@@ -19,11 +20,8 @@ function App() {
 
   //Variables para contabilizar recursos u estructuras actuales
   const [currentAmountFood, setCurrentAmountFood] = useState(500);
-  // const [totalAmountFood, setTotalAmountFood] = useState(1000);
   const [currentAmountGold, setCurrentAmountGold] = useState(250);
-  // const [totalAmountGold, seTtotalAmountGold] = useState(500);
   const [currentAmountVillagers, setCurrentAmountVillagers] = useState(5);
-  // const [totalAmountVillagers, setTotalAmountVillagers] = useState(5);
   const [currentNumberMills, setCurrentNumberMills] = useState(0);
   const [currentNumberMarkets, setCurrentNumberMarkets] = useState(0);
   const [currentNumberHouses, setCurrentNumberHouses] = useState(0);
@@ -98,6 +96,17 @@ function App() {
       typeResource: "gold",
       resourceAmount: 50,
     },
+    {
+      id: 6,
+      name: "Farm",
+      image: "/assets/images/farm_1.png",
+      quantity: 1,
+      show: false,
+      buildTime: 500,
+      villagerAmount: 1,
+      typeResource: "gold",
+      resourceAmount: 150,
+    },
 
   ]);
 
@@ -126,8 +135,8 @@ function App() {
 
           if (
             item.typeResource === "food" && (
-            currentAmountFood === 0 ||
-            currentAmountFood < value.resourceAmount)
+              currentAmountFood === 0 ||
+              currentAmountFood < value.resourceAmount)
           ) {
             setOpenAlert({
               type: "food",
@@ -147,7 +156,7 @@ function App() {
           // valida el total de oro
           if (
             item.typeResource === "gold" && (
-            currentAmountGold === 0 ||
+              currentAmountGold === 0 ||
               currentAmountGold < value.resourceAmount)
           ) {
             setOpenAlert({
@@ -191,11 +200,43 @@ function App() {
       });
     });
   };
-  // useEffect(() => {
 
-    
+  function incrementCurrentAmountGold(value) {
+    setCurrentAmountGold((prev)=>{
+      const newValue = prev + value;
 
-  // },[villagersLimit]);
+      if (newValue > goldLimit) {
+        return goldLimit;
+      }
+      
+      return newValue;
+    });
+  }
+
+  function incrementCurrentAmountFood(value) {
+    setCurrentAmountFood((prev)=>{
+      const newValue = prev + value;
+
+      if (newValue > foodLimit) {
+        return foodLimit;
+      }
+      
+      return newValue;
+    });
+  }
+
+  function incrementCurrentAmountVillagers(value) {
+    setCurrentAmountVillagers((prev)=>{
+      const newValue = prev + value;
+
+      if (newValue > villagersLimit) {
+        return villagersLimit;
+      }
+      
+      return newValue;
+    });
+  }
+
   return (
     <Box mb={10}>
       <NavBar
@@ -266,7 +307,7 @@ function App() {
                   <GoldManualCollector
                     level={level}
                     quantityVillagers={currentAmountVillagers}
-                    handleResourceUpdate={setCurrentAmountGold}
+                    handleResourceUpdate={incrementCurrentAmountGold}
                     handleVillagersUpdate={setCurrentAmountVillagers}
                   />
                 </div>
@@ -325,7 +366,7 @@ function App() {
                   <FoodManualCollector
                     level={level}
                     quantityVillagers={currentAmountVillagers}
-                    handleResourceUpdate={setCurrentAmountFood}
+                    handleResourceUpdate={incrementCurrentAmountFood}
                     handleVillagersUpdate={setCurrentAmountVillagers}
                   />
 
@@ -355,10 +396,41 @@ function App() {
                   <HouseVillager
                     level={level}
                     quantityVillagers={currentAmountVillagers}
-                    handleResourceUpdate={setCurrentAmountFood}
                     handleUpdateStorageValues={setVillagersLimit}
                   />
-                  {setCurrentAmountVillagers((prev)=>prev+1)}
+                  {setCurrentAmountVillagers((prev) => prev + 1)}
+                </div>
+              </Box>
+            )}
+
+            {item.show && item.name === "Farm" && (
+              <Box display="flex" flexDirection="column" alignItems="center">
+                {showProgressBar.townId === item.id && (
+                  <BuildProgressBar
+                    setBuildProgress={setBuildProgress}
+                    setShowProgressBar={setShowProgressBar}
+                    id={showProgressBar.townId}
+                    buildTime={item.buildTime}
+                    setCurrentAmountVillagers={setCurrentAmountVillagers}
+                  />
+                )}
+                <div
+                  style={{
+                    opacity:
+                      showProgressBar.townId === item.id
+                        ? buildProgress.progress / 100
+                        : 1,
+                  }}
+                >
+                  <FoodAutomaticCollector
+                    level = {level}
+                    quantityResource = {currentAmountGold}
+                    quantityVillagers = {currentAmountVillagers}
+                    handleUpdateStorageValues = {setFoodLimit}
+                    handleResourceUpdate = {incrementCurrentAmountFood}
+                    handleResourceRequiredUpdate = {setCurrentAmountGold}
+                    handleVillagersUpdate = {setCurrentAmountVillagers}
+                  />
                 </div>
               </Box>
             )}

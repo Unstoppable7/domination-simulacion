@@ -36,7 +36,7 @@ export default function FoodManualCollector({
 
   function updateValues(currentReward) {
     //Funcion en el padre que va a actualizar los recursos disponibles
-    handleResourceUpdate((prev) => prev + currentReward);
+    handleResourceUpdate(currentReward);
   }
 
   return (

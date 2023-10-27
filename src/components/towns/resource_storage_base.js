@@ -16,6 +16,9 @@ export default function ResourceStorageBase({
   handleVillagersUpdate = () => { },
   handleResourceRequiredUpdate = () => { },
   typeOfResource,
+  villagersRequiredToCollect = 0, 
+  resourceCollected = 0, 
+  timeForCollect = 0
 }) {
   const [currentUpgradeLevel, setCurrentUpgradeLevel] = useState(1);
 
@@ -121,7 +124,9 @@ export default function ResourceStorageBase({
         typeOfResource={typeOfResource}
         resourceRequired={requirementsByLevel[currentUpgradeLevel + 1]?.resourceRequired}
         villagersRequiredToUpgrade={requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired}
-        
+        villagersRequiredToCollect={villagersRequiredToCollect}
+        resourceCollected={resourceCollected}
+        timeForCollect={timeForCollect}
       />
     </>
   );

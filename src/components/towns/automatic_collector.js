@@ -9,11 +9,14 @@ export default function AutomaticCollector({
   quantityVillagers,
   handleUpdateStorageValues,
   name,
-  handleResourceUpdate
+  handleResourceUpdate,
+  handleVillagersUpdate,
+  handleResourceRequiredUpdate,
+  typeOfResource
 }) {
 
   const [currentAccumulatedResource, setCurrentAccumulatedResource] = useState(0);
-  const [resourcesPerMinute, setResourcesPerMinute] = useState(0);
+  const [resourcesPerMinute, setResourcesPerMinute] = useState(upgradeLevels[1].plusResourcesPerMinute);
 
   const [collectBottonState, setCollectBottonState] = useState(false);
 
@@ -23,8 +26,12 @@ export default function AutomaticCollector({
 
     // Iniciar un intervalo que incrementa el contador cada segundo
     const interval = setInterval(() => {
-      setCurrentAccumulatedResource((prevCurrentAccumulatedResource) => prevCurrentAccumulatedResource + resourcesPerMinute);
-    }, 10000);//Cada 10sec
+      setCurrentAccumulatedResource((prevCurrentAccumulatedResource) => {
+        console.log("Resource Collected By", name, ":", prevCurrentAccumulatedResource + resourcesPerMinute);
+        return prevCurrentAccumulatedResource + resourcesPerMinute;
+
+      });
+    }, 3000);
 
     // Limpia el intervalo cuando el componente se desmonta
     return () => {
@@ -35,24 +42,22 @@ export default function AutomaticCollector({
 
   useEffect(() => {
 
-    if(currentAccumulatedResource >= resourcesPerMinute){
-      setCollectBottonState(true);
-    } else {
+    if (currentAccumulatedResource >= resourcesPerMinute) {
       setCollectBottonState(false);
+    } else {
+      setCollectBottonState(true);
     }
 
   }, [currentAccumulatedResource]);
 
   function upgradeCollector(currentUpgradeLevel) {
-    setResourcesPerMinute(
-      resourcesPerMinute + upgradeLevels[currentUpgradeLevel].plusResourcesPerMinute
-    );
+    setResourcesPerMinute((prev) => prev + upgradeLevels[currentUpgradeLevel].plusResourcesPerMinute);
   }
 
   function collectReward() {
 
-    //TODO llamar en el componente padre para manejar la recoleccion del recurso
     handleResourceUpdate(currentAccumulatedResource);
+    setCurrentAccumulatedResource(0);
   }
 
   return (
@@ -64,10 +69,14 @@ export default function AutomaticCollector({
         quantityResource={quantityResource}
         quantityVillagers={quantityVillagers}
         handleUpdateStorageValues={handleUpdateStorageValues}
-        handleUpgrade = {upgradeCollector}
+        handleUpgrade={upgradeCollector}
         name={name}
         handleCollect={collectReward}
         handleDisableCollectBotton={collectBottonState}
+        handleVillagersUpdate={handleVillagersUpdate}
+        handleResourceRequiredUpdate={handleResourceRequiredUpdate}
+        typeOfResource={typeOfResource}
+        resourceCollected={currentAccumulatedResource}
       />
     </>
   );
