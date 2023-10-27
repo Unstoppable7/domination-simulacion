@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Structure from "../structure";
 
 export default function ManualCollectorBase({
@@ -6,7 +6,9 @@ export default function ManualCollectorBase({
   quantityVillagers,
   handleResourceUpdate,
   upgradeLevels,
-  name
+  name,
+  handleVillagersUpdate,
+  typeOfResource
 }) {
   const [currentReward, setCurrentReward] = useState(0);
   const [currentCollectionTime, setCurrentCollectionTime] = useState(0);
@@ -14,8 +16,8 @@ export default function ManualCollectorBase({
   const [currentCitizensRequired, setCurrentCitizensRequired] = useState(0);
   const [currentImage, setCurrentImage] = useState("");
 
-  const [remainingTimeToCollect, setRemainingTimeToCollect] = useState(currentCollectionTime);
-  const [remainingTimeToRefill, setRemainingTimeToRefill] = useState(currentRefillTime);
+  const [remainingTimeToCollect, setRemainingTimeToCollect] = useState(0);
+  const [remainingTimeToRefill, setRemainingTimeToRefill] = useState(0);
   const [isCollectible, setIsCollectible] = useState(true);
 
   const [collectBottonState, setCollectBottonState] = useState(false);
@@ -23,10 +25,10 @@ export default function ManualCollectorBase({
   //Level upgrade
   useEffect(() => {
 
-    setCurrentReward(currentReward + upgradeLevels[level].plusReward);
-    setCurrentCollectionTime(currentCollectionTime + upgradeLevels[level].plusCollectionTime);
-    setCurrentRefillTime(currentRefillTime + upgradeLevels[level].plusRefillTime);
-    setCurrentCitizensRequired(currentCitizensRequired + upgradeLevels[level].plusCitizenRequired);
+    setCurrentReward(upgradeLevels[level].plusReward);
+    setCurrentCollectionTime(upgradeLevels[level].plusCollectionTime);
+    setCurrentRefillTime(upgradeLevels[level].plusRefillTime);
+    setCurrentCitizensRequired(upgradeLevels[level].plusCitizenRequired);
     setCurrentImage(upgradeLevels[level].image);
 
   }, [level]);
@@ -34,9 +36,9 @@ export default function ManualCollectorBase({
   useEffect(() => {
 
     if (quantityVillagers >= currentCitizensRequired && isCollectible) {
-      setCollectBottonState(true);
-    } else {
       setCollectBottonState(false);
+    } else {
+      setCollectBottonState(true);
     }
 
   }, [quantityVillagers, isCollectible]);
@@ -45,18 +47,24 @@ export default function ManualCollectorBase({
 
     setIsCollectible(false);
 
+    handleVillagersUpdate((prev) => prev - currentCitizensRequired);
+
     const timerToCollect = setTimeout(() => {
 
-      //TODO llamar en el componente padre para manejar la recoleccion del recurso
+      //Llama el componente padre para manejar la recoleccion del recurso
       handleResourceUpdate(currentReward);
 
-    }, currentCollectionTime);
+      refillReward();
+      handleVillagersUpdate((prev) => prev + currentCitizensRequired);
+
+    }, currentCollectionTime);  
 
     setRemainingTimeToCollect(currentCollectionTime);
 
     // Actualiza el tiempo restante cada segundo
     const intervalToCollect = setInterval(() => {
       setRemainingTimeToCollect((prevTime) => {
+        console.log("Collect Time", name, ":", prevTime / 1000);
         if (prevTime <= 1000) {
           clearInterval(intervalToCollect); // Detiene el intervalo cuando el tiempo llega a 0
           return 0;
@@ -65,7 +73,14 @@ export default function ManualCollectorBase({
         }
       });
     }, 1000);
+    
+    return () => {
+      clearTimeout(timerToCollect);
+      clearInterval(intervalToCollect);
+    };
+  }
 
+  function refillReward() {
     const timerToRefill = setTimeout(() => {
 
       setIsCollectible(true);
@@ -77,6 +92,7 @@ export default function ManualCollectorBase({
     // Actualiza el tiempo restante cada segundo
     const intervalToRefill = setInterval(() => {
       setRemainingTimeToRefill((prevTime) => {
+        console.log("Refill Time", name, ":", prevTime / 1000);
         if (prevTime <= 1000) {
           clearInterval(intervalToRefill); // Detiene el intervalo cuando el tiempo llega a 0
           return 0;
@@ -86,9 +102,8 @@ export default function ManualCollectorBase({
       });
     }, 1000);
 
+
     return () => {
-      clearTimeout(timerToCollect);
-      clearInterval(intervalToCollect);
       clearTimeout(timerToRefill);
       clearInterval(intervalToRefill);
     };
@@ -100,8 +115,12 @@ export default function ManualCollectorBase({
         name={name}
         image={currentImage}
         handleCollect={collectReward}
-        handleDisableUpgradeBotton={false}
+        handleDisableUpgradeBotton={true}
         handleDisableCollectBotton={collectBottonState}
+        typeOfResource={typeOfResource}
+        villagersRequiredToCollect={currentCitizensRequired}
+        resourceCollected={currentReward}
+        timeForCollect={`${currentCollectionTime/1000}s`}
       />
     </>
   );

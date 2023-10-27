@@ -1,15 +1,16 @@
 import { Box, Button } from "@mui/material";
 import TownHall from "./components/towns/town_hall";
-import Town from "./components/towns/main-town";
-import GoldMine from "./components/towns/gold-mine";
-import House from "./components/towns/house";
-import Farm from "./components/towns/farm";
+import GoldStorage from "./components/towns/gold_storage";
+import FoodStorage from "./components/towns/food_storage";
 import NavBar from "./components/navbar";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import CreateTownModal from "./components/createTownModal";
 import BuildProgressBar from "./components/progressBar";
 import CustomizedSnackbars from "./components/snackBar";
 import { TypesOfResources } from "./constants/constants";
+import GoldManualCollector from "./components/towns/gold_manual_collector";
+import FoodManualCollector from "./components/towns/food_manual_collector";
+import HouseVillager from "./components/towns/house_villager";
 
 function App() {
 
@@ -44,30 +45,30 @@ function App() {
   const [townlevelOneList, setTownLevelOnelist] = useState([
     {
       id: 1,
-      name: "Casa",
-      image: "/assets/images/house.jpg",
+      name: "Market",
+      image: "/assets/images/gold_storage_1.png",
       quantity: 1,
       show: false,
-      buildTime: 1000,
-      villagerAmount: 2,
-      typeResource: "gold",
+      buildTime: 500,
+      villagerAmount: 1,
+      typeResource: "food",
       resourceAmount: 100,
     },
     {
-      id: 2,
-      name: "Mina de oro",
-      image: "/assets/images/gold-mine.jpg",
+      id: 3,
+      name: "Gold Mine",
+      image: "/assets/images/gold_mine_1.png",
       quantity: 1,
       show: false,
-      buildTime: 1500,
+      buildTime: 500,
       villagerAmount: 1,
       typeResource: "food",
       resourceAmount: 250,
     },
     {
-      id: 3,
-      name: "Granja",
-      image: "/assets/images/farm.webp",
+      id: 2,
+      name: "Mill",
+      image: "/assets/images/food_storage_1.png",
       quantity: 1,
       show: false,
       buildTime: 500,
@@ -75,6 +76,29 @@ function App() {
       typeResource: "gold",
       resourceAmount: 125,
     },
+    {
+      id: 4,
+      name: "Fruit Tree",
+      image: "/assets/images/fruit_tree_1.png",
+      quantity: 1,
+      show: false,
+      buildTime: 500,
+      villagerAmount: 1,
+      typeResource: "gold",
+      resourceAmount: 50,
+    },
+    {
+      id: 5,
+      name: "House",
+      image: "/assets/images/house_villager_1.png",
+      quantity: 1,
+      show: false,
+      buildTime: 500,
+      villagerAmount: 1,
+      typeResource: "gold",
+      resourceAmount: 50,
+    },
+
   ]);
 
   const [buildProgress, setBuildProgress] = useState({
@@ -100,13 +124,11 @@ function App() {
         if (item.id === value.id && value.quantity > 0) {
           // valida el total de comida
 
-          console.log(item);
           if (
+            item.typeResource === "food" && (
             currentAmountFood === 0 ||
-            (item.typeResource === "food" &&
-              foodLimit < value.resourceAmount)
+            currentAmountFood < value.resourceAmount)
           ) {
-            console.log("hola");
             setOpenAlert({
               type: "food",
               open: true,
@@ -124,9 +146,9 @@ function App() {
 
           // valida el total de oro
           if (
+            item.typeResource === "gold" && (
             currentAmountGold === 0 ||
-            (item.typeResource === "gold" &&
-              goldLimit < value.resourceAmount)
+              currentAmountGold < value.resourceAmount)
           ) {
             setOpenAlert({
               type: "gold",
@@ -169,7 +191,11 @@ function App() {
       });
     });
   };
+  // useEffect(() => {
 
+    
+
+  // },[villagersLimit]);
   return (
     <Box mb={10}>
       <NavBar
@@ -179,6 +205,7 @@ function App() {
         totalAmountFood={foodLimit}
         currentAmountGold={currentAmountGold}
         totalAmountGold={goldLimit}
+        level={level}
       />
 
       {/* Renderiza luego de construir */}
@@ -186,8 +213,8 @@ function App() {
         {townlevelOneList.map((item) => (
 
           <Fragment key={item.id}>
-            
-            {item.show && item.name === "Casa" && (
+
+            {item.show && item.name === "Market" && (
               <Box display="flex" flexDirection="column" alignItems="center">
                 {showProgressBar.townId === item.id && (
                   <BuildProgressBar
@@ -206,11 +233,18 @@ function App() {
                         : 1,
                   }}
                 >
-                  <House/>
+                  <GoldStorage
+                    level={level}
+                    quantityResource={currentAmountFood}
+                    quantityVillagers={currentAmountVillagers}
+                    handleUpdateStorageValues={setGoldLimit}
+                    handleVillagersUpdate={setCurrentAmountVillagers}
+                    handleResourceRequiredUpdate={setCurrentAmountFood}
+                  />
                 </div>
               </Box>
             )}
-            {item.show && item.name === "Mina de oro" && (
+            {item.show && item.name === "Gold Mine" && (
               <Box display="flex" flexDirection="column" alignItems="center">
                 {showProgressBar.townId === item.id && (
                   <BuildProgressBar
@@ -229,11 +263,16 @@ function App() {
                         : 1,
                   }}
                 >
-                  <GoldMine/>
+                  <GoldManualCollector
+                    level={level}
+                    quantityVillagers={currentAmountVillagers}
+                    handleResourceUpdate={setCurrentAmountGold}
+                    handleVillagersUpdate={setCurrentAmountVillagers}
+                  />
                 </div>
               </Box>
             )}
-            {item.show && item.name === "Granja" && (
+            {item.show && item.name === "Mill" && (
               <Box display="flex" flexDirection="column" alignItems="center">
                 {showProgressBar.townId === item.id && (
                   <BuildProgressBar
@@ -252,21 +291,92 @@ function App() {
                         : 1,
                   }}
                 >
-                  <Farm/>
+                  <FoodStorage
+                    level={level}
+                    quantityResource={currentAmountGold}
+                    quantityVillagers={currentAmountVillagers}
+                    handleUpdateStorageValues={setFoodLimit}
+                    handleVillagersUpdate={setCurrentAmountVillagers}
+                    handleResourceRequiredUpdate={setCurrentAmountGold}
+                  />
+
+                </div>
+              </Box>
+            )}
+            {item.show && item.name === "Fruit Tree" && (
+              <Box display="flex" flexDirection="column" alignItems="center">
+                {showProgressBar.townId === item.id && (
+                  <BuildProgressBar
+                    setBuildProgress={setBuildProgress}
+                    setShowProgressBar={setShowProgressBar}
+                    id={showProgressBar.townId}
+                    buildTime={item.buildTime}
+                    setCurrentAmountVillagers={setCurrentAmountVillagers}
+                  />
+                )}
+                <div
+                  style={{
+                    opacity:
+                      showProgressBar.townId === item.id
+                        ? buildProgress.progress / 100
+                        : 1,
+                  }}
+                >
+                  <FoodManualCollector
+                    level={level}
+                    quantityVillagers={currentAmountVillagers}
+                    handleResourceUpdate={setCurrentAmountFood}
+                    handleVillagersUpdate={setCurrentAmountVillagers}
+                  />
+
+                </div>
+              </Box>
+            )}
+
+            {item.show && item.name === "House" && (
+              <Box display="flex" flexDirection="column" alignItems="center">
+                {showProgressBar.townId === item.id && (
+                  <BuildProgressBar
+                    setBuildProgress={setBuildProgress}
+                    setShowProgressBar={setShowProgressBar}
+                    id={showProgressBar.townId}
+                    buildTime={item.buildTime}
+                    setCurrentAmountVillagers={setCurrentAmountVillagers}
+                  />
+                )}
+                <div
+                  style={{
+                    opacity:
+                      showProgressBar.townId === item.id
+                        ? buildProgress.progress / 100
+                        : 1,
+                  }}
+                >
+                  <HouseVillager
+                    level={level}
+                    quantityVillagers={currentAmountVillagers}
+                    handleResourceUpdate={setCurrentAmountFood}
+                    handleUpdateStorageValues={setVillagersLimit}
+                  />
+                  {setCurrentAmountVillagers((prev)=>prev+1)}
                 </div>
               </Box>
             )}
           </Fragment>
         ))}
+
       </Box>
 
       <Box display="flex" justifyContent="center">
+
         <TownHall
           level={level}
           quantityResource={currentAmountGold}
           quantityVillagers={currentAmountVillagers}
           handleUpdateStorageValues={setGoldLimit}
-          upgradeLevel = {setLevel}
+          upgradeLevel={setLevel}
+          handleVillagersUpdate={setCurrentAmountVillagers}
+          handleResourceRequiredUpdate={setCurrentAmountGold}
         />
       </Box>
 

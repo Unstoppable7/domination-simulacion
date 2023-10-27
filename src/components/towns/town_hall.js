@@ -1,3 +1,4 @@
+import { TypesOfResources } from "../../constants/constants";
 import ResourceStorageBase from "./resource_storage_base";
 
 export default function TownHall({
@@ -5,7 +6,9 @@ export default function TownHall({
     quantityResource,
     quantityVillagers,
     handleUpdateStorageValues,
-    upgradeLevel
+    upgradeLevel,
+    handleVillagersUpdate,
+    handleResourceRequiredUpdate
 }) {
 
     let name = "Town Hall";
@@ -25,7 +28,7 @@ export default function TownHall({
         3: {
             lifePoints: 480, 
             storageCapacity: 500, 
-            image: '/assets/images/town_hall_3.png'
+            image: '/assets/images/town_hall_2.png'
         }
 
     };
@@ -81,6 +84,9 @@ export default function TownHall({
                 name={name}
                 handleDisableCollectBotton={true}
                 handleUpgrade={upgradeTownHall}
+                handleVillagersUpdate={handleVillagersUpdate}
+                handleResourceRequiredUpdate={handleResourceRequiredUpdate}
+                typeOfResource={TypesOfResources.GOLD}
             />
         </>
     );

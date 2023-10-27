@@ -12,7 +12,10 @@ export default function ResourceStorageBase({
   name,
   handleDisableCollectBotton,
   handleDisableUpgradeBotton = true,
-  handleCollect = () => { }
+  handleCollect = () => { },
+  handleVillagersUpdate = () => { },
+  handleResourceRequiredUpdate = () => { },
+  typeOfResource,
 }) {
   const [currentUpgradeLevel, setCurrentUpgradeLevel] = useState(1);
 
@@ -33,11 +36,6 @@ export default function ResourceStorageBase({
 
   //Building level upgrade
   useEffect(() => {
-    console.log("quantityResource: ", quantityResource);
-    console.log("resourceRequired: ", requirementsByLevel[currentUpgradeLevel + 1]?.resourceRequired);
-    console.log("quantityVillagers: ", quantityVillagers);
-    console.log("villagersRequired: ", requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired);
-    console.log("currentUpgradeLevel: ", currentUpgradeLevel);
     if (
       quantityResource >= requirementsByLevel[currentUpgradeLevel + 1]?.resourceRequired &&
       quantityVillagers >= requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired &&
@@ -46,28 +44,19 @@ export default function ResourceStorageBase({
     ) {
       setUpgradeBottonState(false);
 
-      console.log("upgradeBottonState", upgradeBottonState);
-
     } else {
       setUpgradeBottonState(true);
 
     }
 
-    console.log("LEVEL: ", level);
-
   }, [level, quantityResource, quantityVillagers, currentUpgradeLevel]);
 
-  //Solo se ejecuta cuando se crea por primera vez el componente
-  // useEffect(() => {
-  //   improveBuilding();
-  // }, []);
-
   useEffect(() => {
-    
+
     handleUpdateStorageValues(
       upgradeLevels[currentUpgradeLevel]?.storageCapacity
     );
-    
+
     if (handleUpgrade) {
       handleUpgrade(currentUpgradeLevel);
     }
@@ -75,9 +64,12 @@ export default function ResourceStorageBase({
 
   function improveBuilding() {
 
+    handleVillagersUpdate((prev) => prev - requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired);
+    handleResourceRequiredUpdate((prev) => prev - requirementsByLevel[currentUpgradeLevel + 1]?.resourceRequired);
+
     const timer = setTimeout(() => {
 
-      setCurrentUpgradeLevel((prev) => { 
+      setCurrentUpgradeLevel((prev) => {
         const updateUpgradeLevel = prev + 1;
         setCurrentLifePoints(
           currentLifePoints + upgradeLevels[updateUpgradeLevel]?.lifePoints
@@ -87,11 +79,11 @@ export default function ResourceStorageBase({
           upgradeLevels[updateUpgradeLevel]?.storageCapacity
         );
         setCurrentImage(upgradeLevels[updateUpgradeLevel]?.image);
-  
-        
 
         return updateUpgradeLevel;
       });
+
+      handleVillagersUpdate((prev) => prev + requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired);
 
     }, requirementsByLevel[currentUpgradeLevel + 1].upgradeTime);
 
@@ -100,7 +92,7 @@ export default function ResourceStorageBase({
     // Actualiza el tiempo restante cada segundo
     const interval = setInterval(() => {
       setRemainingTime((prevTime) => {
-        console.log("Upgrade Time",name,":",prevTime/1000);
+        console.log("Upgrade Time", name, ":", prevTime / 1000);
         if (prevTime <= 1000) {
           clearInterval(interval); // Detiene el intervalo cuando el tiempo llega a 0
           return 0;
@@ -126,6 +118,10 @@ export default function ResourceStorageBase({
         handleCollect={handleCollect}
         handleDisableUpgradeBotton={upgradeBottonState}
         handleDisableCollectBotton={handleDisableCollectBotton}
+        typeOfResource={typeOfResource}
+        resourceRequired={requirementsByLevel[currentUpgradeLevel + 1]?.resourceRequired}
+        villagersRequiredToUpgrade={requirementsByLevel[currentUpgradeLevel + 1]?.villagersRequired}
+        
       />
     </>
   );

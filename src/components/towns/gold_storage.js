@@ -1,7 +1,7 @@
 import ResourceStorageBase from "./resource_storage_base";
 import { TypesOfResources } from "../../constants/constants";
 
-export default function GoldStorage({ level, quantityResource, quantityVillagers, handleUpdateStorageValues }) {
+export default function GoldStorage({ level, quantityResource, quantityVillagers, handleUpdateStorageValues, handleVillagersUpdate,handleResourceRequiredUpdate }) {
 
     let name = "Market";
 
@@ -10,17 +10,17 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
         1: {
             lifePoints: 960,
             storageCapacity: 2500,
-            image: 'market_level_1'
+            image: '/assets/images/gold_storage_1.png'
         },
         2: {
             lifePoints: 480, //1440
             storageCapacity: 7500, //10000
-            image: 'market_level_2'
+            image: '/assets/images/gold_storage_2.png'
         },
         3: {
             lifePoints: 480, //1920,
             storageCapacity: 20000, //30000,
-            image: 'market_level_3'
+            image: '/assets/images/gold_storage_3.png'
         }
 
     };
@@ -28,19 +28,22 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
     const requirementsByLevel = {
 
         1: {
-            resourceRequired: 500,
-            villagersRequired: 4,
-            upgradeTime: 900000 //15min
+            resourceRequired: 0,
+            villagersRequired: 0,
+            upgradeTime: 0,
+            level: 0
         },
         2: {
-            resourceRequired: 1400,
+            resourceRequired: 150,
             villagersRequired: 4,
-            upgradeTime: 900000 //15min
+            upgradeTime: 5000,
+            level: 1
         },
         3: {
             resourceRequired: 5600,
             villagersRequired: 4,
-            upgradeTime: 1800000 //30min
+            upgradeTime: 1800000,
+            level: 1
         }
 
     };
@@ -48,7 +51,7 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
     function updateValues(plusStorageCapacity) {
 
         //Funcion en el padre que va a actualizar el limite actual del recurso
-        handleUpdateStorageValues(TypesOfResources.GOLD, plusStorageCapacity);
+        handleUpdateStorageValues((prev) => { return prev + plusStorageCapacity});
     }
 
     return (
@@ -61,7 +64,11 @@ export default function GoldStorage({ level, quantityResource, quantityVillagers
                 quantityVillagers={quantityVillagers}
                 handleUpdateStorageValues={updateValues}
                 name={name}
-                handleDisableCollectBotton={false}
+                handleDisableCollectBotton={true}
+                handleVillagersUpdate={handleVillagersUpdate}
+                handleResourceRequiredUpdate={handleResourceRequiredUpdate}
+                typeOfResource={TypesOfResources.FOOD}
+
             />
         </>
     );

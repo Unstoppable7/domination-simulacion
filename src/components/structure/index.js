@@ -12,7 +12,13 @@ const Structure = ({
   handleCollect, 
   handleUpgrade, 
   handleDisableCollectBotton,
-  handleDisableUpgradeBotton
+  handleDisableUpgradeBotton, 
+  typeOfResource, 
+  resourceRequired = 0, 
+  villagersRequiredToCollect = 0, 
+  villagersRequiredToUpgrade = 0,
+  resourceCollected = 0, 
+  timeForCollect = 0
 }) => {
   const [openInformationModal, setOpenInformationModal] = useState(false);
 
@@ -45,6 +51,12 @@ const Structure = ({
         handleUpgrade={handleUpgrade}
         handleDisableCollectBotton={handleDisableCollectBotton}
         handleDisableUpgradeBotton={handleDisableUpgradeBotton}
+        typeOfResource={typeOfResource}
+        resourceRequired={resourceRequired}
+        villagersRequiredToCollect={villagersRequiredToCollect} 
+        villagersRequiredToUpgrade={villagersRequiredToUpgrade} 
+        resourceCollected={resourceCollected} 
+        timeForCollect={timeForCollect}
       />
     </>
   );

@@ -51,7 +51,7 @@ export default function BuildProgressBar({
         open: false,
       });
 
-      setCurrentAmountVillagers(5);
+      setCurrentAmountVillagers((prev)=>prev+1);
 
       setBuildProgress({
         id: null,

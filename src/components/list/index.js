@@ -4,8 +4,9 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { Box, ListItemIcon } from "@mui/material";
+import { TypesOfResources } from "../../constants/constants";
 
-export default function NestedList({ showImproveOption = true, handleCollect, handleUpgrade, handleDisableCollectBotton, handleDisableUpgradeBotton }) {
+export default function NestedList({ showImproveOption = true, handleCollect, handleUpgrade, handleDisableCollectBotton, handleDisableUpgradeBotton, typeOfResource, resourceRequired, villagersRequiredToCollect, villagersRequiredToUpgrade,resourceCollected, timeForCollect}) {
   return (
     <List
       sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
@@ -21,20 +22,26 @@ export default function NestedList({ showImproveOption = true, handleCollect, ha
         <ListItemButton onClick={handleUpgrade} disabled={handleDisableUpgradeBotton}>
           <ListItemText primary="Mejorar" />
 
-          <ListItemText primary={"nombre"} />
-          <div>
-            <ListItemText primary={`1`} />
-          </div>
+          <ListItemText primary={`👨${villagersRequiredToUpgrade}`} />
+          <ListItemText primary={
+            typeOfResource === TypesOfResources.FOOD
+            ? `🍟${resourceRequired}`
+            : `💰${resourceRequired}`
+            } />
 
-          <Box ml={3}>
-            {"2"/* {item.typeResource === "food"
-              ? `🍟${item.resourceAmount}`
-              : `💰${item.resourceAmount}`} */}
-          </Box>
+            
         </ListItemButton>
       )}
       <ListItemButton onClick={handleCollect} disabled={handleDisableCollectBotton}>
         <ListItemText primary="Recoger" />
+        <ListItemText primary={`👨${villagersRequiredToCollect}`} />
+          <ListItemText primary={
+            typeOfResource === TypesOfResources.FOOD
+            ? `💰${resourceCollected}`
+            : `🍟${resourceCollected}`
+            } />
+        <ListItemText primary={`🕓${timeForCollect}`} />
+
       </ListItemButton>
     </List>
   );

@@ -1,12 +1,12 @@
 import ResourceStorageBase from "./resource_storage_base";
 import { TypesOfResources } from "../../constants/constants";
 
-export default function HouseVillager({ 
-    level, 
-    quantityResource, 
-    quantityVillagers, 
+export default function HouseVillager({
+    level,
+    quantityResource,
+    quantityVillagers,
     handleUpdateStorageValues,
- }) {
+}) {
 
     let name = "House";
 
@@ -14,18 +14,18 @@ export default function HouseVillager({
 
         1: {
             lifePoints: 100,
-            storageCapacity: 50,
-            image: 'house_level_1'
+            storageCapacity: 1,
+            image: '/assets/images/house_villager_1.png'
         },
         2: {
-            lifePoints: 150, 
-            storageCapacity: 100, 
-            image: 'house_level_2'
+            lifePoints: 150,
+            storageCapacity: 1,
+            image: '/assets/images/house_villager_2.png'
         },
         3: {
-            lifePoints: 200, 
-            storageCapacity: 150,
-            image: 'house_level_3'
+            lifePoints: 200,
+            storageCapacity: 1,
+            image: '/assets/images/house_villager_2.png'
         }
 
     };
@@ -40,7 +40,7 @@ export default function HouseVillager({
         2: {
             resourceRequired: 100,
             villagersRequired: 1,
-            upgradeTime: 15000 
+            upgradeTime: 15000
         },
         3: {
             resourceRequired: 200,
@@ -53,7 +53,7 @@ export default function HouseVillager({
     function updateValues(plusStorageCapacity) {
 
         //Funcion en el padre que va a actualizar el limite actual del recurso
-        handleUpdateStorageValues(TypesOfResources.FOOD, plusStorageCapacity);
+        handleUpdateStorageValues((prev) => { return prev + plusStorageCapacity});
     }
 
     return (
@@ -66,8 +66,9 @@ export default function HouseVillager({
                 quantityVillagers={quantityVillagers}
                 handleUpdateStorageValues={updateValues}
                 name={name}
-                handleDisableCollectBotton={false}
-                handleDisableUpgradeBotton = {false}
+                handleDisableCollectBotton={true}
+                handleDisableUpgradeBotton={true}
+                typeOfResource={TypesOfResources.FOOD}
             />
         </>
     );

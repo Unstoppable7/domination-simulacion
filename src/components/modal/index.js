@@ -13,7 +13,13 @@ export default function InformationDialog({
   handleCollect, 
   handleUpgrade, 
   handleDisableCollectBotton,
-  handleDisableUpgradeBotton
+  handleDisableUpgradeBotton, 
+  typeOfResource, 
+  resourceRequired, 
+  villagersRequiredToCollect, 
+  villagersRequiredToUpgrade,
+  resourceCollected, 
+  timeForCollect
 
 }) {
   return (
@@ -21,7 +27,7 @@ export default function InformationDialog({
       <DialogTitle>{name}</DialogTitle>
 
       <DialogContent style={{ width: 400 }}>
-        <NestedList showImproveOption={showImproveOption} handleCollect={handleCollect} handleUpgrade={handleUpgrade} handleDisableCollectBotton={handleDisableCollectBotton} handleDisableUpgradeBotton={handleDisableUpgradeBotton}/>
+        <NestedList showImproveOption={showImproveOption} handleCollect={handleCollect} handleUpgrade={handleUpgrade} handleDisableCollectBotton={handleDisableCollectBotton} handleDisableUpgradeBotton={handleDisableUpgradeBotton} typeOfResource={typeOfResource} resourceRequired={resourceRequired} villagersRequiredToCollect={villagersRequiredToCollect} villagersRequiredToUpgrade={villagersRequiredToUpgrade} resourceCollected={resourceCollected} timeForCollect={timeForCollect}/>
       </DialogContent>
     </Dialog>
   );

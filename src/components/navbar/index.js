@@ -13,6 +13,7 @@ function NavBar({
   totalAmountFood,
   currentAmountGold,
   totalAmountGold,
+  level
 }) {
   return (
     <AppBar position="static" style={{ backgroundColor: "#fff" }}>
@@ -60,7 +61,7 @@ function NavBar({
             </Box>
 
             <Box>
-              <Typography color="black">Edad de piedra - 🌟1</Typography>
+              <Typography color="black">Edad 🌟{level}</Typography>
             </Box>
           </Box>
         </Toolbar>
